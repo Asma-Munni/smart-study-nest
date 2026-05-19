@@ -13,11 +13,14 @@ const Navbar = () => {
 
   const publicMenuItems = [
     { name: "Home", path: "/" },
+     { name: "See All Room", path: "/all-room" },
     { name: "Rooms", path: "/rooms" },
   ];
 
   const privateMenuItems = [
     { name: "Home", path: "/" },
+   
+    { name: "See All Room", path: "/all-room" },
     { name: "Rooms", path: "/rooms" },
     { name: "Add Room", path: "/rooms/add-room" },
     { name: "My Listings", path: "/my-listing" },

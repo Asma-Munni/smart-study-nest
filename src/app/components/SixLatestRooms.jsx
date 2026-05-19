@@ -1,17 +1,13 @@
-import { getAllRooms } from "@/lib/room/data";
-import Image from "next/image";
+import { getLatestRooms } from "@/lib/room/data";
 import Link from "next/link";
 import React from "react";
 
-const PopularRooms = async () => {
-  const roomsData = await getAllRooms();
+const SixLatestRoom = async () => {
+  const roomsData = await getLatestRooms();
 
   return (
-    <section className="bg-[#f8f4ea] py-16">
+    <section className="bg-[#f8f4ea] pb-16">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Section Title */}
-        
-
         {/* Room Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {roomsData.map((room) => (
@@ -22,13 +18,11 @@ const PopularRooms = async () => {
               {/* Image */}
               <div className="relative h-56 w-full overflow-hidden">
                 <img
-                
                   src={room.image}
                   alt={room.roomName}
                   className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
 
-                {/* Price Badge */}
                 <div className="absolute top-4 right-4 rounded-full bg-[#0f172a]/90 px-4 py-2 text-sm font-semibold text-[#f5ecd7] backdrop-blur-sm">
                   ${room.hourlyRate}/hr
                 </div>
@@ -44,7 +38,6 @@ const PopularRooms = async () => {
                   {room.description}
                 </p>
 
-                {/* Info */}
                 <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-lg bg-[#f8f4ea] p-3">
                     <p className="text-gray-500">Floor</p>
@@ -61,7 +54,6 @@ const PopularRooms = async () => {
                   </div>
                 </div>
 
-                {/* Amenities */}
                 <div className="mt-5 flex flex-wrap gap-2">
                   {room.amenities?.slice(0, 4).map((amenity) => (
                     <span
@@ -79,7 +71,6 @@ const PopularRooms = async () => {
                   )}
                 </div>
 
-                {/* Button */}
                 <div className="mt-6">
                   <Link
                     href={`/rooms/${room._id}`}
@@ -92,9 +83,19 @@ const PopularRooms = async () => {
             </div>
           ))}
         </div>
+
+        {/* Explore More Button */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/rooms"
+            className="inline-block rounded-xl bg-[#d8a84f] px-8 py-3 font-semibold text-[#0f172a] shadow-md transition hover:bg-[#e7c46e]"
+          >
+            Explore All Rooms
+          </Link>
+        </div>
       </div>
     </section>
   );
 };
 
-export default PopularRooms;
+export default SixLatestRoom;
