@@ -9,6 +9,7 @@ const Navbar = () => {
     { name: "Rooms", path: "/rooms" },
     { name: "Add Room", path: "/rooms/add-room" },
     { name: "My Bookings", path: "/my-bookings" },
+    
   ];
 
   return (
@@ -100,7 +101,10 @@ const Navbar = () => {
       </div>
 
       {/* Navbar End */}
-      <div className="navbar-end">
+      <div className="navbar-end gap-2">
+        <Link 
+         className="px-5 py-2 rounded-md bg-[#d8c08c] text-[#0f172a] font-medium shadow-md hover:bg-[#e7d2a3] transition duration-300"
+        href="/signup">Sign-Up</Link>
         <Link
           href="/login"
           className="px-5 py-2 rounded-md bg-[#d8c08c] text-[#0f172a] font-medium shadow-md hover:bg-[#e7d2a3] transition duration-300"
