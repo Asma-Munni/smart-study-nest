@@ -15,8 +15,9 @@ import { Check } from "@gravity-ui/icons";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
 
-const SignUpPage = () => {
+const RegisterPage = () => {
   const router = useRouter();
 
   const onSubmit = async (e) => {
@@ -25,8 +26,6 @@ const SignUpPage = () => {
     const formData = new FormData(e.currentTarget);
     const user = Object.fromEntries(formData.entries());
 
-    console.log(user)
-
     const { data, error } = await authClient.signUp.email({
       email: user.email,
       password: user.password,
@@ -34,33 +33,45 @@ const SignUpPage = () => {
       image: user.image,
     });
 
-    if (data) {
-      router.push("/login");
-      router.refresh();
+    if (error) {
+      toast.error(error.message || "Registration failed");
+      return;
     }
 
-    if (error) {
-      alert(error.message);
+    if (data) {
+      toast.success("Registration successful! Please login.");
+
+      setTimeout(() => {
+        router.push("/login");
+        router.refresh();
+      }, 800);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    await authClient.signIn.social({
+    const { error } = await authClient.signIn.social({
       provider: "google",
+      callbackURL: "/",
     });
+
+    if (error) {
+      toast.error(error.message || "Google registration failed");
+    }
   };
 
   return (
     <section className="min-h-screen bg-[#f8f4ea] px-4 py-12">
+      <Toaster position="top-center" />
+
       <div className="mx-auto max-w-5xl">
-        {/* Page Heading */}
         <div className="mb-8 text-center">
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-[#d8a84f]">
             Library Room Booking
           </p>
 
           <h1 className="text-3xl font-bold text-[#0f172a] md:text-4xl">
-            Create Your <span className="text-[#d8a84f]">Library Account</span>
+            Create Your{" "}
+            <span className="text-[#d8a84f]">Library Account</span>
           </h1>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-600 md:text-base">
@@ -69,12 +80,12 @@ const SignUpPage = () => {
           </p>
         </div>
 
-        {/* Main Card */}
         <Card className="mx-auto max-w-2xl rounded-3xl border border-[#eadfca] bg-white p-6 shadow-xl md:p-10">
           <div className="mb-6 rounded-2xl bg-[#0f172a] px-5 py-5 text-center">
             <h2 className="text-2xl font-bold text-[#f5ecd7]">
-              Sign Up for Room Access
+              Register for Room Access
             </h2>
+
             <p className="mt-2 text-sm text-[#f5ecd7]/80">
               Create an account to reserve library rooms and manage your study
               bookings.
@@ -87,25 +98,41 @@ const SignUpPage = () => {
               <Label className="font-semibold text-[#0f172a]">
                 Full Name
               </Label>
+
               <Input
                 placeholder="Enter your full name"
                 className="rounded-xl border border-[#eadfca] bg-[#f8f4ea] px-4 py-3 text-[#0f172a] outline-none transition focus:border-[#d8a84f] focus:ring-2 focus:ring-[#d8a84f]/30"
               />
+
               <FieldError />
             </TextField>
 
-            {/* Image URL */}
-            <TextField name="image" type="url">
+            {/* Photo URL */}
+            <TextField
+              isRequired
+              name="image"
+              type="url"
+              validate={(value) => {
+                if (!value) {
+                  return "Photo URL is required";
+                }
+
+                return null;
+              }}
+            >
               <Label className="font-semibold text-[#0f172a]">
-                Profile Image URL
+                Photo URL
               </Label>
+
               <Input
                 placeholder="Paste your profile image URL"
                 className="rounded-xl border border-[#eadfca] bg-[#f8f4ea] px-4 py-3 text-[#0f172a] outline-none transition focus:border-[#d8a84f] focus:ring-2 focus:ring-[#d8a84f]/30"
               />
+
               <Description className="text-gray-500">
-                Optional. You can add your profile photo URL.
+                Please provide a valid image URL for your profile photo.
               </Description>
+
               <FieldError />
             </TextField>
 
@@ -120,36 +147,39 @@ const SignUpPage = () => {
                 ) {
                   return "Please enter a valid email address";
                 }
+
                 return null;
               }}
             >
               <Label className="font-semibold text-[#0f172a]">
                 Email Address
               </Label>
+
               <Input
-                placeholder="Type Your Email"
+                placeholder="Type your email"
                 className="rounded-xl border border-[#eadfca] bg-[#f8f4ea] px-4 py-3 text-[#0f172a] outline-none transition focus:border-[#d8a84f] focus:ring-2 focus:ring-[#d8a84f]/30"
               />
+
               <FieldError />
             </TextField>
 
             {/* Password */}
             <TextField
               isRequired
-              minLength={8}
+              minLength={6}
               name="password"
               type="password"
               validate={(value) => {
-                if (value.length < 8) {
-                  return "Password must be at least 8 characters";
+                if (value.length < 6) {
+                  return "Password must be at least 6 characters";
                 }
 
                 if (!/[A-Z]/.test(value)) {
                   return "Password must contain at least one uppercase letter";
                 }
 
-                if (!/[0-9]/.test(value)) {
-                  return "Password must contain at least one number";
+                if (!/[a-z]/.test(value)) {
+                  return "Password must contain at least one lowercase letter";
                 }
 
                 return null;
@@ -158,24 +188,27 @@ const SignUpPage = () => {
               <Label className="font-semibold text-[#0f172a]">
                 Password
               </Label>
+
               <Input
                 placeholder="Create a secure password"
                 className="rounded-xl border border-[#eadfca] bg-[#f8f4ea] px-4 py-3 text-[#0f172a] outline-none transition focus:border-[#d8a84f] focus:ring-2 focus:ring-[#d8a84f]/30"
               />
+
               <Description className="text-gray-500">
-                Must be at least 8 characters with 1 uppercase letter and 1
-                number.
+                Must be at least 6 characters with 1 uppercase and 1 lowercase
+                letter.
               </Description>
+
               <FieldError />
             </TextField>
 
-            {/* Submit Button */}
+            {/* Register Button */}
             <Button
               type="submit"
               className="mt-2 w-full rounded-xl bg-[#0f172a] px-6 py-3 font-semibold text-[#f5ecd7] transition duration-300 hover:bg-[#d8a84f] hover:text-[#0f172a]"
             >
               <Check />
-              Create Library Account
+              Register
             </Button>
           </Form>
 
@@ -186,13 +219,13 @@ const SignUpPage = () => {
             <div className="h-px flex-1 bg-[#eadfca]" />
           </div>
 
-          {/* Google Sign In */}
+          {/* Google Register */}
           <Button
             onClick={handleGoogleSignIn}
             type="button"
             className="w-full rounded-xl border border-[#eadfca] bg-[#f8f4ea] px-6 py-3 font-semibold text-[#0f172a] transition duration-300 hover:border-[#d8a84f] hover:bg-[#d8a84f]/20"
           >
-            Sign up with Google
+            Continue with Google
           </Button>
 
           {/* Login Link */}
@@ -202,7 +235,7 @@ const SignUpPage = () => {
               href="/login"
               className="font-semibold text-[#d8a84f] hover:underline"
             >
-              Login here
+              Login
             </Link>
           </p>
         </Card>
@@ -211,4 +244,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default RegisterPage;

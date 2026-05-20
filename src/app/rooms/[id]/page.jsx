@@ -2,6 +2,7 @@ import { getRoomDetails } from "@/lib/room/data";
 import { Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 import React from "react";
+import RoomBookingAction from "@/app/components/RoomBookingAction";
 
 const RoomDetailsPage = async ({ params }) => {
   const { id } = await params;
@@ -83,28 +84,36 @@ const RoomDetailsPage = async ({ params }) => {
                 </p>
 
                 {/* Room Info */}
-                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
-                    <p className="text-sm text-gray-500">Floor</p>
-                    <h3 className="mt-1 font-bold text-[#0f172a]">
-                      {roomDetails.floor}
-                    </h3>
-                  </div>
+               {/* Room Info */}
+<div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
+    <p className="text-sm text-gray-500">Floor</p>
+    <h3 className="mt-1 font-bold text-[#0f172a]">
+      {roomDetails.floor}
+    </h3>
+  </div>
 
-                  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
-                    <p className="text-sm text-gray-500">Capacity</p>
-                    <h3 className="mt-1 font-bold text-[#0f172a]">
-                      {roomDetails.capacity} People
-                    </h3>
-                  </div>
+  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
+    <p className="text-sm text-gray-500">Capacity</p>
+    <h3 className="mt-1 font-bold text-[#0f172a]">
+      {roomDetails.capacity} People
+    </h3>
+  </div>
 
-                  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
-                    <p className="text-sm text-gray-500">Hourly Rate</p>
-                    <h3 className="mt-1 font-bold text-[#d8a84f]">
-                      ${roomDetails.hourlyRate}
-                    </h3>
-                  </div>
-                </div>
+  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
+    <p className="text-sm text-gray-500">Hourly Rate</p>
+    <h3 className="mt-1 font-bold text-[#d8a84f]">
+      ${roomDetails.hourlyRate}/hr
+    </h3>
+  </div>
+
+  <div className="rounded-2xl bg-[#f8f4ea] p-4 border border-[#eadfca]">
+    <p className="text-sm text-gray-500">Booking Count</p>
+    <h3 className="mt-1 font-bold text-[#0f172a]">
+      {roomDetails.bookingCount || 0}
+    </h3>
+  </div>
+</div>
 
                 {/* Amenities */}
                 <div className="mt-8">
@@ -126,12 +135,7 @@ const RoomDetailsPage = async ({ params }) => {
 
                 {/* Buttons */}
                 <div className="mt-10 flex flex-wrap gap-4">
-                  <Link
-                    href={`/book-room/${roomId}`}
-                    className="rounded-xl bg-[#0f172a] px-7 py-3 font-semibold text-[#f5ecd7] shadow-md transition duration-300 hover:bg-[#d8a84f] hover:text-[#0f172a]"
-                  >
-                    Book This Room
-                  </Link>
+                 <RoomBookingAction room={roomDetails} roomId={roomId} /> 
 
                   <Link
                     href="/rooms"

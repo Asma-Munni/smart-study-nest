@@ -27,8 +27,8 @@ export default function Home() {
     <LatestRooms></LatestRooms>
     <HowItWorks></HowItWorks>
     <WhyChooseUs></WhyChooseUs>
-    <Footer></Footer>
+    
       
-      Homepage</div>
+    </div>
   );
 }
