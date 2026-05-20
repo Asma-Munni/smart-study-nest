@@ -3,22 +3,33 @@
 import { addRoom } from "@/lib/room/action";
 import { Button, Form } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import React from "react";
 
 const AddRoomForm = () => {
   const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+const user = session?.user;
  const handleAddRoom = async (e) => {
 
   
 
    e.preventDefault();
     const formData = new FormData(e.currentTarget);
-     await addRoom(formData)
+    const data = await addRoom(formData)
     
-   if(DataTransfer.insertedId){
+   if(data.insertedId){
     router.push("/rooms")
    };
 };
+
+if (isPending) {
+  return (
+    <section className="flex min-h-screen items-center justify-center bg-[#f8f4ea]">
+      <p className="font-semibold text-[#0f172a]">Loading...</p>
+    </section>
+  );
+}
 
   const amenitiesOptions = [
     "Whiteboard",
@@ -40,6 +51,11 @@ const AddRoomForm = () => {
           <Form 
           onSubmit={handleAddRoom}
           className="flex flex-col gap-5">
+
+             {/* Hidden owner data for My Listings */}
+  <input type="hidden" name="ownerId" value={user?.id || ""} />
+  <input type="hidden" name="ownerName" value={user?.name || ""} />
+  <input type="hidden" name="ownerEmail" value={user?.email || ""} />
             {/* Room Name */}
             <div className="flex flex-col gap-2">
               <label className="font-semibold text-[#0f172a]">

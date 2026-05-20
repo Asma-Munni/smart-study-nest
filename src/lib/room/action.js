@@ -2,59 +2,69 @@
 
 import { revalidatePath } from "next/cache";
 
-export const addRoom =async (formData)=>{
-const newRoom = Object.fromEntries(formData.entries());
 
 
-const amenities = formData.getAll("amenities");
-const modifiedData = {
-      roomName: newRoom.roomName,
-      description: newRoom.description,
-      image: newRoom.image,
-      floor: newRoom.floor,
-      capacity: parseInt(newRoom.capacity),
-      hourlyRate: parseFloat(newRoom.hourlyRate),
-      amenities: amenities,
-    };
-    console.log(modifiedData);
+{/*Add room */}
 
-    const res = await fetch("http://localhost:5000/rooms", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(modifiedData),
-    });
+export const addRoom = async (formData) => {
+  const newRoom = Object.fromEntries(formData.entries());
+  const amenities = formData.getAll("amenities");
 
-    if (!res.ok) {
+  const modifiedData = {
+    roomName: newRoom.roomName,
+    description: newRoom.description,
+    image: newRoom.image,
+    floor: newRoom.floor,
+    capacity: parseInt(newRoom.capacity),
+    hourlyRate: parseFloat(newRoom.hourlyRate),
+    amenities: amenities,
+
+    // owner data
+    ownerId: newRoom.ownerId,
+    ownerName: newRoom.ownerName,
+    ownerEmail: newRoom.ownerEmail,
+
+    bookingCount: 0,
+    createdAt: new Date().toISOString(),
+  };
+
+  const res = await fetch("http://localhost:5000/rooms", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(modifiedData),
+  });
+
+  if (!res.ok) {
     throw new Error("Failed to add room");
   }
 
   const data = await res.json();
-  console.log(data);
 
-  revalidatePath("/rooms"); // revalidate after successful POST
+  revalidatePath("/rooms");
+  revalidatePath("/my-listings");
 
   return data;
-  };
+};
 
   {/*delete function */}
-  export const deleteRoom = async (id) => {
+ export const deleteRoom = async (id, userId) => {
+  const res = await fetch(`http://localhost:5000/rooms/${id}?userId=${userId}`, {
+    method: "DELETE",
+  });
 
-    const res = await fetch(`http://localhost:5000/rooms/${id}`, {
-        method: 'DELETE',
-    }); 
+  const data = await res.json();
 
-const data = await res.json();
-if (!res.ok) return;
-console.log(data);
-if (res.ok){
-    revalidatePath('/rooms');}
-   
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to delete room");
+  }
 
-return data;
+  revalidatePath("/rooms");
+  revalidatePath("/my-listings");
 
-}
+  return data;
+};
 
 {/*Update */}
 
@@ -127,6 +137,21 @@ export const bookRoom = async (roomId, formData) => {
 
   revalidatePath(`/rooms/${roomId}`);
   revalidatePath("/my-bookings");
+
+  return data;
+};
+
+{/*My Listing */}
+export const getMyListings = async (userId) => {
+  const res = await fetch(`http://localhost:5000/my-listings/${userId}`, {
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to load my listings");
+  }
 
   return data;
 };
