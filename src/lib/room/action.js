@@ -78,6 +78,16 @@ export const addRoom = async (formData) => {
 {/*Update */}
 
 export const updateRoom = async (id, formData) => {
+    
+   const tokenObject = await auth.api.getToken({
+    headers: await headers(),
+  });
+
+  const token = tokenObject?.token;
+
+  if (!token) {
+    throw new Error("Unauthorized: Token not found. Please login again.");
+  }
 
     const updatedRoom = Object.fromEntries(formData.entries());
    // console.log(updatedRoom);
@@ -96,6 +106,7 @@ const modifiedData = {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(modifiedData),
         
@@ -114,6 +125,16 @@ const modifiedData = {
 {/*Room book */}
 
 export const bookRoom = async (roomId, formData) => {
+  const tokenObject = await auth.api.getToken({
+    headers: await headers(),
+  });
+
+  const token = tokenObject?.token;
+
+  if (!token) {
+    throw new Error("Unauthorized: Token not found. Please login again.");
+  }
+
   const booking = Object.fromEntries(formData.entries());
 
   const bookingData = {
@@ -134,6 +155,7 @@ export const bookRoom = async (roomId, formData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(bookingData),
   });
@@ -168,8 +190,17 @@ export const getMyListings = async (userId) => {
 
 {/*My Booking */}
 export const getMyBookings = async (userId) => {
+   const tokenObject = await auth.api.getToken({
+    headers: await headers(),
+  });
+  console.log(tokenObject, "TokenObject")
+  const token = tokenObject?.token
+  console.log(token)
   const res = await fetch(`http://localhost:5000/my-bookings/${userId}`, {
     cache: "no-store",
+    header:{
+       Authorization:`Bearer ${token}`
+    }
   });
 
   const data = await res.json();
@@ -181,13 +212,26 @@ export const getMyBookings = async (userId) => {
   return data;
 };
 
+{/*Cancel booking */}
+
 export const cancelBooking = async (bookingId, userId) => {
+  const tokenObject = await auth.api.getToken({
+    headers: await headers(),
+  });
+
+  const token = tokenObject?.token;
+
+  if (!token) {
+    throw new Error("Unauthorized: Token not found. Please login again.");
+  }
+
   const res = await fetch(
     `http://localhost:5000/bookings/${bookingId}/cancel`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+       Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ userId }),
     }
