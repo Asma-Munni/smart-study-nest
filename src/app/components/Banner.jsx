@@ -7,7 +7,7 @@ const Banner = () => {
     <section
       className="relative min-h-[85vh] flex items-center justify-center bg-cover bg-center"
       style={{
-        backgroundImage: "url('/images/Banner.png')",
+        backgroundImage: "url('/images/banner.png')",
       }}
     >
       {/* Dark overlay for text readability */}

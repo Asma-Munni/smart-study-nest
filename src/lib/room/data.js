@@ -1,11 +1,11 @@
 export const getAllRooms = async () =>{
-const res = await fetch("http://localhost:5000/rooms");
+const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`);
 const data = await res.json();
 return data;
 }
 
 export const getRoomDetails = async (id) =>{
-    const res = await fetch(`http://localhost:5000/rooms/${id}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${id}`);
    const data = await res.json();
   // console.log(data);
    return data;
@@ -13,7 +13,7 @@ export const getRoomDetails = async (id) =>{
 
 {/*Six latest room sort */}
 export const getLatestRooms = async () => {
-  const res = await fetch("http://localhost:5000/latest-rooms", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/latest-rooms`, {
     cache: "no-store",
   });
 

@@ -35,7 +35,7 @@ export const addRoom = async (formData) => {
     bookingCount: 0,
     createdAt: new Date().toISOString(),
   };
- const res = await fetch("http://localhost:5000/rooms", {
+ const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export const addRoom = async (formData) => {
 
   {/*delete function */}
  export const deleteRoom = async (id, userId) => {
-  const res = await fetch(`http://localhost:5000/rooms/${id}?userId=${userId}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${id}?userId=${userId}`, {
     method: "DELETE",
   });
 
@@ -102,7 +102,7 @@ const modifiedData = {
       amenities: amenities,
     };
     console.log(modifiedData);
-   const res = await fetch(`http://localhost:5000/rooms/${id}`, {
+   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ export const bookRoom = async (roomId, formData) => {
     specialNote: booking.specialNote || "",
   };
 
-  const res = await fetch("http://localhost:5000/bookings", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/bookings`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -174,7 +174,7 @@ export const bookRoom = async (roomId, formData) => {
 
 {/*My Listing */}
 export const getMyListings = async (userId) => {
-  const res = await fetch(`http://localhost:5000/my-listings/${userId}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-listings/${userId}`, {
     cache: "no-store",
   });
 
@@ -196,7 +196,7 @@ export const getMyBookings = async (userId) => {
   console.log(tokenObject, "TokenObject")
   const token = tokenObject?.token
   console.log(token)
-  const res = await fetch(`http://localhost:5000/my-bookings/${userId}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-bookings/${userId}`, {
     cache: "no-store",
     header:{
        Authorization:`Bearer ${token}`
@@ -226,7 +226,7 @@ export const cancelBooking = async (bookingId, userId) => {
   }
 
   const res = await fetch(
-    `http://localhost:5000/bookings/${bookingId}/cancel`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/bookings/${bookingId}/cancel`,
     {
       method: "PATCH",
       headers: {
