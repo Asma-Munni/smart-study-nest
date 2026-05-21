@@ -1,12 +1,20 @@
 "use server"
 
 import { revalidatePath } from "next/cache";
+import { auth } from "../auth";
+import { headers } from "next/headers";
 
 
 
 {/*Add room */}
 
 export const addRoom = async (formData) => {
+  const tokenObject = await auth.api.getToken({
+    headers: await headers()
+  })
+  console.log(tokenObject, "TokenObject")
+  const token = tokenObject?.token
+  console.log(token)
   const newRoom = Object.fromEntries(formData.entries());
   const amenities = formData.getAll("amenities");
 
@@ -27,11 +35,11 @@ export const addRoom = async (formData) => {
     bookingCount: 0,
     createdAt: new Date().toISOString(),
   };
-
-  const res = await fetch("http://localhost:5000/rooms", {
+ const res = await fetch("http://localhost:5000/rooms", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization:`Bearer ${token}`
     },
     body: JSON.stringify(modifiedData),
   });
@@ -40,7 +48,8 @@ export const addRoom = async (formData) => {
     throw new Error("Failed to add room");
   }
 
-  const data = await res.json();
+  const data = await res.json(); 
+ 
 
   revalidatePath("/rooms");
   revalidatePath("/my-listings");
