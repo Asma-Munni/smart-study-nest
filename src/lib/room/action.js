@@ -155,3 +155,43 @@ export const getMyListings = async (userId) => {
 
   return data;
 };
+
+
+{/*My Booking */}
+export const getMyBookings = async (userId) => {
+  const res = await fetch(`http://localhost:5000/my-bookings/${userId}`, {
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to load my bookings");
+  }
+
+  return data;
+};
+
+export const cancelBooking = async (bookingId, userId) => {
+  const res = await fetch(
+    `http://localhost:5000/bookings/${bookingId}/cancel`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to cancel booking");
+  }
+
+  revalidatePath("/my-bookings");
+  revalidatePath("/rooms");
+
+  return data;
+};
