@@ -53,7 +53,7 @@ const Footer = () => {
 
               <li>
                 <Link
-                  href="/about"
+                  href="/"
                   className="transition hover:text-[#d8c08c]"
                 >
                   About
