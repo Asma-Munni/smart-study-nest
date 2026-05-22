@@ -1,10 +1,10 @@
 import { getAllRooms } from "@/lib/room/data";
-import Image from "next/image";
+
 import Link from "next/link";
 import React from "react";
 
-const PopularRooms = async () => {
-  const roomsData = await getAllRooms();
+const PopularRooms = async ({ searchQuery = "" }) => {
+  const roomsData = await getAllRooms(searchQuery);
 
   return (
     <section className="bg-[#f8f4ea] py-16">
