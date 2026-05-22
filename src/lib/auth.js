@@ -7,27 +7,36 @@ const client = new MongoClient(process.env.MONGODB_URI);
 const db = client.db("smart-study");
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
+
+  trustedOrigins: [
+    "https://smart-study-nest.vercel.app/",
+    "https://smart-study-nest.vercel.app",
+  ],
+
   database: mongodbAdapter(db, {
-   
-    client
+    client,
   }),
-  emailAndPassword: { 
-    enabled: true, 
-  }, 
+
+  emailAndPassword: {
+    enabled: true,
+  },
+
   socialProviders: {
-        google: { 
-            clientId: process.env.GOOGLE_CLIENT_ID, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
-        }, 
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
-    session: {
-      cookieCache:{
-        enabled:true,
-        strategy: "jwt",
-        maxAge: 7 * 24 * 60 * 60
-      }
+  },
+
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 7 * 24 * 60 * 60,
     },
-    plugins: [
-        jwt(), 
-    ] 
+  },
+
+  plugins: [
+    jwt(),
+  ],
 });
